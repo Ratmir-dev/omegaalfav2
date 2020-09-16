@@ -1,10 +1,22 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+
+class Balance {
+  String del;
+  Balance({this.del});
+
+  factory Balance.fromJson(Map<String, dynamic> json){
+    return Balance(
+      del: json['del']
+    );
+  }
+}
+
 class Address {
-  final String id;
+  final int id;
   final String address;
-  final String balance;
+  final Balance balance;
 
   Address({this.id, this.address, this.balance});
 
@@ -12,7 +24,7 @@ class Address {
     return Address(
         id: json['id'],
         address: json['address'],
-        balance: json['balance']
+        balance: Balance.fromJson(json['balance'])
     );
   }
 }
@@ -29,7 +41,7 @@ class Result {
 
 class User {
   Result result;
-  String ok;
+  bool ok;
   User({this.result, this.ok});
 
   factory User.fromJson(Map<String, dynamic> json){

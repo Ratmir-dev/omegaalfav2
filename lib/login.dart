@@ -14,7 +14,13 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  void _onLoading() async {
+  void _onLoading(String numm) async {
+
+//    for debug
+    String numm = "dx19gt49xy8530wrewchjvrvgpm4r4wu3s25csr0a";
+
+    String urlQuery = "https://mainnet-gate.decimalchain.com/api/address/$numm?txLimit=10";
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -41,11 +47,17 @@ class _LoginState extends State<Login> {
         );
       },
     );
-    new  Future.delayed(new Duration(seconds: 3), () async {
 
+    var response = await http.get(urlQuery);
+    print(response.body);
+
+    Future.delayed( Duration(seconds: 3), () async {
+      print('start delay');
       User _user;
 
       void _processResponse(http.Response response) {
+        print(response.body.toString()+"=======");
+
         if (response.statusCode == 200) {
           setState(() {
             _user = User.fromJson(json.decode(response.body));
@@ -54,21 +66,23 @@ class _LoginState extends State<Login> {
         }
       }
 
-      void _updateData() {
-        http.get('https://mainnet-gate.decimalchain.com/api/address/$num?txLimit=10')
-            .then(_processResponse);
-      }
-      _updateData();
+      print(urlQuery);
+      await http.get(urlQuery);
+      _processResponse(response);
+
+
       Navigator.of(context).pop();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Balance(_user)));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PageBalance(_user)));
 
 
 
     });
+
   }
 
 
 
+  TextEditingController controller = TextEditingController();
   bool check = true;
   String title = "Omega";
   @override
@@ -133,6 +147,7 @@ class _LoginState extends State<Login> {
                                     border: Border(bottom: BorderSide(color: Colors.grey[200]))
                                 ),
                                 child: TextField(
+                                  controller: controller,
                                   decoration: InputDecoration(
                                       hintText: "Адресс кошелька",
                                       hintStyle: TextStyle(color: Colors.grey),
@@ -146,7 +161,7 @@ class _LoginState extends State<Login> {
                         SizedBox(height: 60,),
                         GestureDetector(
                           onTap: () async {
-                            _onLoading();
+                            _onLoading(controller.text);
 
                           },
                           child: FadeAnimation(1.6, Container(
