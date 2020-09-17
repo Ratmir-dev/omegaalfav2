@@ -93,7 +93,8 @@ class PageBalance extends StatelessWidget {
                   ),
                 ),
               ),
-              //HeadSwiper(context, _user)
+              Container(
+                  height: size.height*0.20,child: HeadSwiper(context, _user))
             ],
           ),
         ),
